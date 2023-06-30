@@ -1,0 +1,15 @@
+{
+  "name": "Youtube Download",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "the name speaks for itself",
+  "author": "Basil Ahmad",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "download the youtube video on the cuurent tab"
+  },
+  "icons": {
+    "128": "./src/icon.png"
+  },
+  "permissions": ["tabs", "<all_urls>"]
+}
