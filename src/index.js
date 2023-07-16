@@ -14,11 +14,15 @@ function idExtract(url) {
 }
 
 function urlsExtract(txt) {
-  let imgst = txt.lastIndexOf('src="') + 5;
-  let imgend = txt.indexOf(".jpg") + 4;
+  let imgss = txt.split("<img")[1];
+  //   console.log(txt);
+  //   console.log(imgss);
+  let imgst = imgss.indexOf("https://");
+  let imgend = imgss.indexOf('">', imgst);
+  console.log(imgst + "\n" + imgend);
   let downst = txt.indexOf('<a href="') + 9;
   let downend = txt.indexOf('"', downst);
-  return [txt.substring(imgst, imgend), txt.substring(downst, downend)];
+  return [imgss.substring(imgst, imgend), txt.substring(downst, downend)];
 }
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
@@ -40,20 +44,18 @@ Switch.addEventListener("click", () => {
   }
 });
 if (localStorage.getItem("check") == "true") Switch.click();
-getCurrentTab()
-  .then((res) => chrome.tabs.get(res.id))
-  .then((data) => {
-    let id = idExtract(data.url);
-    setTimeout(() => {
-      let Exurl = `https://api.vevioz.com/api/widget/${ftype}/${id}`;
-      fetch(Exurl)
-        .then((res) => res.text())
-        .then((res) => {
-          let data = urlsExtract(res);
-          document.getElementById("img").src = data[0];
-          window.location.replace(data[1]);
-          // document.close();
-        })
-        .catch((err) => document.writeln(err));
-    }, 2000);
-  });
+getCurrentTab().then((res) => {
+  let id = idExtract(res.url);
+  setTimeout(() => {
+    let Exurl = `https://api.vevioz.com/api/widget/${ftype}/${id}`;
+    fetch(Exurl)
+      .then((res) => res.text())
+      .then((res) => {
+        let data = urlsExtract(res);
+        document.getElementById("img").src = data[0];
+        window.location.replace(data[1]);
+        // document.close();
+      })
+      .catch((err) => document.writeln(err));
+  }, 2000);
+});
